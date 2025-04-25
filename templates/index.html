@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoCAD Floor Plan Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <h1><i class="fas fa-drafting-compass"></i> CadCrafter</h1>
+            <p class="subtitle">Create professional DWG floor plans in seconds</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="grid-container">
+            <div class="form-section">
+                <div class="card">
+                    <h2><i class="fas fa-pencil-ruler"></i> Generate Your Floor Plan</h2>
+                    <form action="/generate" method="post" id="floorplanForm">
+                        <div class="form-group">
+                            <label for="width">Width (meters):</label>
+                            <input type="number" id="width" name="width" min="1" max="100" value="10" step="0.1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="length">Length (meters):</label>
+                            <input type="number" id="length" name="length" min="1" max="100" value="10" step="0.1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="wall_thickness">Wall Thickness (meters):</label>
+                            <input type="number" id="wall_thickness" name="wall_thickness" min="0.05" max="0.5" value="0.15" step="0.01" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rooms">Number of Rooms:</label>
+                            <input type="number" id="rooms" name="rooms" min="1" max="10" value="1" required>
+                        </div>
+                        
+                        <div id="roomsContainer">
+                            <!-- Room-specific fields will be generated here -->
+                        </div>
+                        
+                        <button type="submit" class="generate-btn"><i class="fas fa-download"></i> Generate DWG File</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-layer-group"></i> Technical Details</h2>
+                    <p>Our generator creates DWG files with the following specifications:</p>
+                    <ul class="tech-list">
+                        <li><i class="fas fa-check"></i> <strong>File Format:</strong> AutoCAD R2010 compatible DXF/DWG</li>
+                        <li><i class="fas fa-check"></i> <strong>Units:</strong> Meters (standard for architectural drawings)</li>
+                        <li><i class="fas fa-check"></i> <strong>Wall Thickness:</strong> Customizable (default: 15cm)</li>
+                        <li><i class="fas fa-check"></i> <strong>Door Width:</strong> Customizable (default: 90cm)</li>
+                        <li><i class="fas fa-check"></i> <strong>Window Width:</strong> Customizable (default: 120cm)</li>
+                        <li><i class="fas fa-check"></i> <strong>Layer Structure:</strong> Organized by element type (walls, doors, windows, etc.)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="card">
+                    <h2><i class="fas fa-info-circle"></i> About DWG Format</h2>
+                    <p>DWG (Drawing) is a proprietary binary file format used for storing 2D and 3D design data and metadata. It is the native format for AutoCAD and is one of the most widely used formats in the architecture, engineering, and construction industries.</p>
+                    <p>Key features of DWG files include:</p>
+                    <ul>
+                        <li>Support for both 2D and 3D design data</li>
+                        <li>Compact file size for efficient storage</li>
+                        <li>Wide compatibility with CAD software</li>
+                        <li>Ability to include layers, blocks, and other design elements</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-building"></i> Civil Engineering Elements</h2>
+                    <p>Common civil engineering elements in CAD drawings include:</p>
+                    <div class="civil-items">
+                        <div class="civil-item">
+                            <i class="fas fa-border-all"></i>
+                            <span>Walls</span>
+                        </div>
+                        <div class="civil-item">
+                            <i class="fas fa-door-open"></i>
+                            <span>Doors</span>
+                        </div>
+                        <div class="civil-item">
+                            <i class="fas fa-window-maximize"></i>
+                            <span>Windows</span>
+                        </div>
+                        <div class="civil-item">
+                            <i class="fas fa-toilet"></i>
+                            <span>Fixtures</span>
+                        </div>
+                        <div class="civil-item">
+                            <i class="fas fa-columns"></i>
+                            <span>Columns</span>
+                        </div>
+                        <div class="civil-item">
+                            <i class="fas fa-stairs"></i>
+                            <span>Stairs</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-ruler-combined"></i> Drawing Standards</h2>
+                    <p>Our floor plans follow international drawing standards:</p>
+                    <div class="standards-list">
+                        <div class="standard-item">
+                            <h3><i class="fas fa-globe-americas"></i> ISO 128</h3>
+                            <p>Technical drawings - General principles of presentation</p>
+                        </div>
+                        <div class="standard-item">
+                            <h3><i class="fas fa-ruler"></i> AIA CAD Layer Guidelines</h3>
+                            <p>Standard layer naming and organization</p>
+                        </div>
+                        <div class="standard-item">
+                            <h3><i class="fas fa-drafting-compass"></i> BS 1192</h3>
+                            <p>Collaborative production of architectural and engineering information</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card workflow-section">
+            <h2><i class="fas fa-project-diagram"></i> How It Works</h2>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Enter Dimensions</h3>
+                        <p>Specify the dimensions, number of rooms, and customize features for each room.</p>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Generate DWG</h3>
+                        <p>Our system creates a professional DWG file based on your specifications.</p>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Download & Edit</h3>
+                        <p>Download the file and open it in AutoCAD or any compatible CAD software for further customization.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <p>&copy; 2024 AutoCAD Floor Plan Generator | A professional tool for architects and civil engineers</p>
+    </footer>
+
+    <script>
+        document.getElementById('rooms').addEventListener('change', function() {
+            generateRoomFields();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            generateRoomFields();
+        });
+
+        function generateRoomFields() {
+            const roomsContainer = document.getElementById('roomsContainer');
+            const numRooms = parseInt(document.getElementById('rooms').value);
+            
+            roomsContainer.innerHTML = '';
+            
+            for (let i = 1; i <= numRooms; i++) {
+                const roomDiv = document.createElement('div');
+                roomDiv.className = 'room-config';
+                roomDiv.innerHTML = `
+                    <h3>Room ${i} Configuration</h3>
+                    <div class="form-group">
+                        <label for="room_name_${i}">Room Name:</label>
+                        <input type="text" id="room_name_${i}" name="room_name_${i}" value="Room ${i}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="room_doors_${i}">Number of Doors:</label>
+                        <input type="number" id="room_doors_${i}" name="room_doors_${i}" min="0" max="4" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="door_width_${i}">Door Width (meters):</label>
+                        <input type="number" id="door_width_${i}" name="door_width_${i}" min="0.6" max="2.0" value="0.9" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="room_windows_${i}">Number of Windows:</label>
+                        <input type="number" id="room_windows_${i}" name="room_windows_${i}" min="0" max="4" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="window_width_${i}">Window Width (meters):</label>
+                        <input type="number" id="window_width_${i}" name="window_width_${i}" min="0.6" max="2.0" value="1.2" step="0.1" required>
+                    </div>
+                `;
+                roomsContainer.appendChild(roomDiv);
+            }
+        }
+    </script>
+</body>
+</html> 
